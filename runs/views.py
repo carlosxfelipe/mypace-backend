@@ -1,10 +1,46 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 from django.db.models import Count, Sum, Avg, Min, F
 from .models import Run
-from .serializers import RunSerializer
+from .serializers import RunSerializer, EmailAuthTokenSerializer, RegisterSerializer
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response(
+            {
+                "token": token.key,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class EmailAuthToken(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = EmailAuthTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key})
 
 
 class RunViewSet(viewsets.ModelViewSet):

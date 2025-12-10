@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # Third party
     "rest_framework",
     "rest_framework.authtoken",
+    "drf_spectacular",
     "corsheaders",
     # Local apps
     "runs",
@@ -129,6 +130,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
@@ -137,4 +139,12 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 50,
+}
+
+# DRF SPECTACULAR (Swagger/OpenAPI)
+SPECTACULAR_SETTINGS = {
+    "TITLE": "MyPace API",
+    "DESCRIPTION": "API REST para gerenciamento de corridas - MyPace",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
