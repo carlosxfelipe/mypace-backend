@@ -327,10 +327,6 @@ Lá você pode:
 - Ver schemas de request/response
 - Autenticar com token
 
-## 📚 Documentação Adicional
-
-Para mais detalhes sobre setup e configuração, consulte [BACKEND_SETUP.md](./BACKEND_SETUP.md)
-
 ## 📄 Licença
 
 ISC
