@@ -84,3 +84,30 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data["username"] = validated_data["email"]
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True, required=True)
+    new_password = serializers.CharField(write_only=True, required=True, min_length=6)
+    new_password_confirm = serializers.CharField(
+        write_only=True, required=True, min_length=6
+    )
+
+    def validate_old_password(self, value):
+        user = self.context["request"].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Senha atual incorreta.")
+        return value
+
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["new_password_confirm"]:
+            raise serializers.ValidationError(
+                {"new_password": "As senhas não coincidem."}
+            )
+        return attrs
+
+    def save(self):
+        user = self.context["request"].user
+        user.set_password(self.validated_data["new_password"])
+        user.save()
+        return user

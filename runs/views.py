@@ -6,7 +6,12 @@ from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 from django.db.models import Count, Sum, Avg, Min, F
 from .models import Run
-from .serializers import RunSerializer, EmailAuthTokenSerializer, RegisterSerializer
+from .serializers import (
+    RunSerializer,
+    EmailAuthTokenSerializer,
+    RegisterSerializer,
+    ChangePasswordSerializer,
+)
 
 
 class RegisterView(APIView):
@@ -41,6 +46,40 @@ class EmailAuthToken(APIView):
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key})
+
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        user.delete()
+        return Response(
+            {"message": "Conta deletada com sucesso."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+
+    def put(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data, context={"request": request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        # Invalida o token atual e cria um novo
+        Token.objects.filter(user=request.user).delete()
+        token = Token.objects.create(user=request.user)
+        return Response(
+            {
+                "message": "Senha alterada com sucesso.",
+                "token": token.key,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class RunViewSet(viewsets.ModelViewSet):

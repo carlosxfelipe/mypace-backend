@@ -88,6 +88,13 @@ A API estará disponível em:
 | POST   | `/api/auth/register/` | Registrar novo usuário |
 | POST   | `/api/auth/login/`    | Login (obter token)    |
 
+### Conta (Requer Autenticação)
+
+| Método | Endpoint                     | Descrição     |
+| ------ | ---------------------------- | ------------- |
+| PUT    | `/api/auth/change-password/` | Mudar senha   |
+| DELETE | `/api/auth/delete-account/`  | Deletar conta |
+
 ### Corridas (Requer Autenticação)
 
 | Método | Endpoint           | Descrição                 |
@@ -153,6 +160,30 @@ Resposta:
   "token": "abc123..."
 }
 ```
+
+### Mudar Senha
+
+```bash
+curl -X PUT http://localhost:8000/api/auth/change-password/ \
+  -H "Authorization: Token abc123..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "old_password": "senha_atual",
+    "new_password": "nova_senha_segura",
+    "new_password_confirm": "nova_senha_segura"
+  }'
+```
+
+Resposta:
+
+```json
+{
+  "message": "Senha alterada com sucesso.",
+  "token": "novo_token_xyz..."
+}
+```
+
+⚠️ **Importante:** Após mudar a senha, use o novo token retornado.
 
 ### Usando o Token
 
