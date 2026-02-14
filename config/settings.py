@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+# import os
 from pathlib import Path
-from decouple import config, Csv
+
 import dj_database_url
+from decouple import Csv, config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -87,6 +89,8 @@ DATABASES = {
         conn_health_checks=True,
     )
 }
+# DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db.sqlite3")
+# DATABASES = {"default": dj_database_url.config(default=DATABASE_URL)}
 
 
 # Password validation
