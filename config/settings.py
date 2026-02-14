@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-# import os
+import os
 from pathlib import Path
 
 import dj_database_url
@@ -82,15 +82,19 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=config("DATABASE_URL"),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
-# DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db.sqlite3")
-# DATABASES = {"default": dj_database_url.config(default=DATABASE_URL)}
+# Configuração para uso do banco de dados NeonDB (PostgreSQL gerenciado na nuvem)
+# DATABASES = {
+#     "default": dj_database_url.config(
+#         default=config("DATABASE_URL"),
+#         conn_max_age=600,
+#         conn_health_checks=True,
+#     )
+# }
+
+# Por padrão, será utilizado SQLite como banco local se DATABASE_URL não estiver definido.
+# Para usar NeonDB/PostgreSQL, defina a variável de ambiente DATABASE_URL conforme o exemplo no .env.template.
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///db.sqlite3")
+DATABASES = {"default": dj_database_url.config(default=DATABASE_URL)}
 
 
 # Password validation
