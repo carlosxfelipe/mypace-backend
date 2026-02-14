@@ -40,11 +40,21 @@ Crie um arquivo `.env` na raiz do projeto:
 
 ```env
 SECRET_KEY=sua-secret-key-aqui
-DEBUG=True
-DATABASE_URL=postgresql://user:password@host/database?sslmode=require
+
+DATABASE_URL=postgresql://neondb_owner:npg_************@ep-broad-recipe-ad4gdbfn-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+
+# Configurações para desenvolvimento
 ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOWED_ORIGINS=http://localhost:3000
+CORS_ALLOW_ALL_ORIGINS=True
+DEBUG=True
+
+# Produção (Render)
+# ALLOWED_HOSTS=mypace-backend.onrender.com
+# CORS_ALLOW_ALL_ORIGINS=True
+# DEBUG=False
 ```
+
+> 💡 Copie o conteúdo acima para seu `.env` local. Para produção (Render), configure as variáveis de ambiente no painel do Render, usando os valores adequados para produção e nunca use DEBUG=True.
 
 Para gerar uma `SECRET_KEY` segura:
 
